@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed User Profile</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #1d2671, #c33764);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: #ffffff;
+            color: #333;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to right, #1d2671, #c33764);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #c33764;
+            border-bottom: 2px solid #1d2671;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .details div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+        }
+
+        .details div strong {
+            color: #1d2671;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>User Details</h1>
+        </div>
+
+        <!-- Section 1: Account Information -->
+        <div class="section">
+            <h2>Account Information</h2>
+            <div class="details">
+                <div><strong>Account Number:</strong> <span id="account-number">Loading...</span></div>
+                <div><strong>IFSC Code:</strong> <span id="ifsc-code">Loading...</span></div>
+            </div>
+        </div>
+
+        <!-- Section 2: Personal and Registration Details -->
+        <div class="section">
+            <h2>Personal and Registration Details</h2>
+            <div class="details">
+                <div><strong>Name:</strong> <span id="profile-name">Loading...</span></div>
+                <div><strong>Email:</strong> <span id="profile-email">Loading...</span></div>
+                <div><strong>Gender:</strong> <span id="profile-gender">Loading...</span></div>
+                <div><strong>Number:</strong> <span id="profile-number">Loading...</span></div>
+                <div><strong>Pan Number:</strong><span id="profile-pan">Loading...</span></div>
+                <div><strong>Aadhar Number:</strong><span id="profile-aadhar">Loading...</span></div>
+                <div><strong>Account Type:</strong><span id="profile-acctype">Loading...</span></div>
+                <div><strong>Date Of Birth:</strong><span id="profile-dob">Loading...</span></div>
+                <div><strong>State:</strong><span id="profile-state">Loading...</span></div>
+                <div><strong>Address:</strong><span id="profile-address"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user info from session storage
+        const UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+
+        // Element references
+        const accountNumberEl = document.getElementById('account-number');
+        const ifscCodeEl = document.getElementById('ifsc-code');
+        const profileNameEl = document.getElementById('profile-name');
+        const profileEmailEl = document.getElementById('profile-email');
+        const profileGenderEl = document.getElementById('profile-gender');
+        const profileNumberEl = document.getElementById('profile-number');
+        const profilePanE1 = document.getElementById('profile-pan');
+        const profileAadharE1 = document.getElementById('profile-aadhar');
+        const profileAccTypeE1 = document.getElementById('profile-acctype');
+        const profileDOBE1 = document.getElementById('profile-dob');
+        const profileStateE1 = document.getElementById('profile-state');
+        const profileAddressE1 = document.getElementById('profile-address');
+        const profileAccNumberE1 = document.getElementById('profile-accAccount');
+        const profileIFSCCodeE1 = document.getElementById("profile-ifscCode");
+        if (UserInfo) {
+            // Populate Account Information
+            accountNumberEl.innerText = UserInfo.AccountNumber || "N/A";
+            ifscCodeEl.innerText = UserInfo.IFSCCode || "N/A";
+
+            // Populate Personal Details
+            profileNameEl.innerText = UserInfo.first_name || "N/A";
+            profileEmailEl.innerText = UserInfo.email || "N/A";
+            profileGenderEl.innerText = UserInfo.Gender || "Not specified";
+            profileNumberEl.innerText = UserInfo.PhoneNumber || "N/A";
+            profilePanE1.innerText = UserInfo.PanNumber || "N/A";
+            profileAadharE1.innerText = UserInfo.Aadhar || "N/A";
+            profileAccTypeE1.innerText = UserInfo.AccountType || "N/A";
+            profileDOBE1.innerText = UserInfo.DOB || "N/A";
+            profileStateE1.innerText = UserInfo.State || "N/A";
+            profileAddressE1.innerText = UserInfo.Address || "N/A";
+            // profileAccNumberE1.innerText = UserInfo.AccountNumber ||"N/A";
+            // profileIFSCCodeE1.innerText = UserInfo.IFSCCode || "N/A";
+
+        } else {
+            // Redirect to login if no user info found
+            window.location.href = 'login_page.html';
+        }
+    </script>
+</body>
+</html>

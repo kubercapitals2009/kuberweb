@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuber Capitals Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* General Styles */
+        body {
+            background: linear-gradient(135deg, #1c1c1c, #343a40);
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: #1e293b;
+            color: #ffffff;
+            padding: 70px 60px;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 100%;
+            height: auto;
+            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4fc3f7;
+            letter-spacing: 1px;
+        }
+
+        /* Form Group */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #bbb;
+            font-weight: bold;
+        }
+
+        .form-control {
+            background: #2e3c50;
+            color: #fff;
+            border: 1px solid #4fc3f7;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            background: #4fc3f7;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #29b6f6;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 15px;
+            background: transparent;
+            color: #4fc3f7;
+            border: 1px solid #4fc3f7;
+            border-radius: 10px;
+            transition: all 0.4s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4fc3f7;
+            color: #000;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>KUBER CAPITALS</h2>
+        <form id="MainForm">
+            <!-- <div class="input-group"> -->
+                <label for="email">User Email:</label> <br>
+                <input type="email" id="email" name="email" required placeholder="Enter your email"
+                    class="form-control"> <br>
+            <!-- </div> -->
+            <!-- <div class="input-group"> -->
+                <label for="userId">User ID:</label> <br>
+                <input type="text" id="userId" name="userId" required placeholder="Enter your user ID"
+                    class="form-control"> <br>
+            <!-- </div> -->
+            <!-- <div class="input-group"> -->
+                <label for="password">Password:</label> <br>
+                <input type="password" id="password" name="password" required placeholder="Enter your password"
+                    class="form-control"> <br> <br>
+            <!-- </div> -->
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a href="registration.html"><button type="button" class="btn btn-secondary">Sign Up</button></a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYq7emwuBE5umqLsPOVuSAuFVof8AKtsY",
+            authDomain: "kuber-capitals-670d4.firebaseapp.com",
+            databaseURL: "https://kuber-capitals-670d4-default-rtdb.firebaseio.com",
+            projectId: "kuber-capitals-670d4",
+            storageBucket: "kuber-capitals-670d4.firebasestorage.app",
+            messagingSenderId: "1047880352488",
+            appId: "1:1047880352488:web:4b8ab2ed1ed5cac6a2bf5d",
+            measurementId: "G-H6N1MTGHHP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const dbref = ref(db);
+
+        let email = document.getElementById("email");
+        let userId = document.getElementById("userId");
+        let password = document.getElementById("password");
+        let Gender = document.getElementById("Gender");
+        let PhoneNumber = document.getElementById("PhoneNumber");
+        let PanNumber = document.getElementById("PanNumber");
+        let Aadhar = document.getElementById("Aadhar");
+        let AccountType = document.getElementById("AccountType");
+        let Address = document.getElementById("Address");
+        let DOB = document.getElementById("DOB");
+        let State = document.getElementById("State");
+        let AccountNumber = document.getElementById("AccountNumber");
+        let IFSCCode = document.getElementById("IFSCCode");
+        let MainForm = document.getElementById("MainForm");
+
+        const SignInUser = async (evt) => {
+            evt.preventDefault();
+
+            // Sign in with email and password
+            signInWithEmailAndPassword(auth, email.value, password.value)
+                .then((credentials) => {
+                    const sanitizedUserId = userId.value.replace(/[.@#$\[\]]/g, "_");
+
+                    // Fetch user data from Firebase Realtime Database
+                    get(child(dbref, 'users/' + sanitizedUserId)).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            // Check if the userId matches
+                            if (snapshot.val().userId === userId.value) {
+                                sessionStorage.setItem("user-info", JSON.stringify({
+                                    first_name: snapshot.val().first_name,
+                                    email: snapshot.val().email,
+                                    Gender: snapshot.val().Gender,
+                                    PhoneNumber: snapshot.val().PhoneNumber,
+                                    PanNumber: snapshot.val().PanNumber,
+                                    Aadhar: snapshot.val().Aadhar,
+                                    AccountType: snapshot.val().AccountType,
+                                    Address: snapshot.val().Address,
+                                    DOB: snapshot.val().DOB,
+                                    State: snapshot.val().State,
+                                    AccountNumber: snapshot.val().AccountNumber,
+                                    IFSCCode: snapshot.val().IFSCCode,
+                                }));
+
+                                sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                                window.location.href = 'profile_page.html';
+                            } else {
+                                alert("User ID does not match the credentials.");
+                            }
+                        } else {
+                            alert("User not found or invalid User ID.");
+                        }
+                    }).catch(error => {
+                        alert("Error fetching user data: " + error.message);
+                    });
+                })
+                .catch((error) => {
+                    alert("Login failed: " + error.message);
+                });
+        };
+
+        MainForm.addEventListener('submit', SignInUser);
+    </script>
+</body>
+
+</html>

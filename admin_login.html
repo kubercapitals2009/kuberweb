@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Universal Capital Group</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            color: black;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e88e5;
+        }
+
+        .login-container label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: block;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .login-container button {
+            width: 100%;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-container button:hover {
+            background-color: #1565c0;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <label for="userId">User ID (Email):</label>
+            <input type="email" id="userId" name="userId" placeholder="Enter your email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p id="errorMessage" class="error-message"></p>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import the necessary Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYq7emwuBE5umqLsPOVuSAuFVof8AKtsY",
+            authDomain: "kuber-capitals-670d4.firebaseapp.com",
+            databaseURL: "https://kuber-capitals-670d4-default-rtdb.firebaseio.com",
+            projectId: "kuber-capitals-670d4",
+            storageBucket: "kuber-capitals-670d4.firebasestorage.app",
+            messagingSenderId: "1047880352488",
+            appId: "1:1047880352488:web:4b8ab2ed1ed5cac6a2bf5d",
+            measurementId: "G-H6N1MTGHHP"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // Handle login form submission
+        const loginForm = document.getElementById("loginForm");
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("userId").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            try {
+                // Sign in with email and password
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const userId = userCredential.user.uid;
+
+                // Check admin role in the database
+                const dbRef = ref(db);
+                const userData = await get(child(dbRef, `users/${userId}`));
+
+                if (userData.exists() && userData.val().role === "admin") {
+                    // Redirect to the admin dashboard
+                    window.location.href = "input.html";
+                } else {
+                    errorMessage.textContent = "Access denied: Admins only.";
+                    await signOut(auth);
+                }
+            } catch (error) {
+                errorMessage.textContent = "Login failed: " + error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>

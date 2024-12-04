@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuber Capitals - Add Entry</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            background-color: #1e293b;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #b0bec5;
+        }
+
+        .form-container {
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-container button {
+            width: 100%;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .form-container button:hover {
+            background-color: #1565c0;
+        }
+
+        .form-container .secondary-button {
+            background-color: transparent;
+            color: #1e88e5;
+            border: 1px solid #1e88e5;
+        }
+
+        .form-container .secondary-button:hover {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Kuber Capitals</h1>
+        <p>Empowering Your Financial Journey</p>
+    </div>
+    <div class="form-container">
+        <h3>Add New Entry</h3>
+        <form id="entryForm">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="userId" placeholder="Enter user ID" required>
+            <label for="amount">Amount (₹):</label>
+            <input type="text" id="amount" name="amount" placeholder="Enter amount" required>
+            <label for="date">Date:</label>
+            <input type="datetime-local" id="date" name="date" required>
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="Delevered">Delevered</option>
+                <option value="Sell">Sell</option>
+                <option value="Hold">Hold</option>
+                <option value="Extended">Extended</option>
+            </select>
+            <label for="fund">Fund (₹):</label>
+            <input type="text" id="fund" name="fund" placeholder="Enter Fund" required>
+
+            <div class="upload-section">
+                <input type="file" id="file-input" accept="image/*">
+                <button id="upload-button">Upload Photo</button>
+            </div>
+
+            
+
+            <button type="submit">Submit</button>
+            <button type="button" class="secondary-button" onclick="viewEntries()">View All Entries</button>
+            <button type="button" class="secondary-button" onclick="deleteEntry()">Delete Entry</button>
+        </form>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYq7emwuBE5umqLsPOVuSAuFVof8AKtsY",
+            authDomain: "kuber-capitals-670d4.firebaseapp.com",
+            databaseURL: "https://kuber-capitals-670d4-default-rtdb.firebaseio.com",
+            projectId: "kuber-capitals-670d4",
+            storageBucket: "kuber-capitals-670d4.appspot.com",
+            messagingSenderId: "1047880352488",
+            appId: "1:1047880352488:web:4b8ab2ed1ed5cac6a2bf5d",
+            measurementId: "G-H6N1MTGHHP"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Form submission handler
+        const form = document.getElementById('entryForm').
+            addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Get form values
+                const uid = document.getElementById('userId').value.replace(/[@.]/g, '_');
+                const amount = document.getElementById('amount').value + "/-";
+                const date = new Date(document.getElementById('date').value).toLocaleString();
+                const status = document.getElementById('status').value;
+                const fund = document.getElementById('fund').value + "/-";
+                const fileRef = document.getElementById('file-input').value
+               // const fileRef = storageRef(storage, `file-input/${file.name}`);
+
+                // Create a new entry object
+                const newEntry = { uid, amount, date, status, fund , };
+
+                // Push the new entry to Firebase
+                push(ref(db, 'users/' + uid), newEntry)
+                    .then(() => {
+                        alert('Entry added successfully!');
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        alert('Error: ' + error.message);
+                    });
+            });
+
+        // View entries
+
+    
+        const database = getDatabase(); // Ensure you have initialized your database
+
+        function viewEntries() {
+            const uid = prompt("Enter User ID to view entries:");
+            if (uid) {
+                const entriesRef = ref(database, 'users/' + uid); // Reference to the user node
+                onValue(
+                    entriesRef,
+                    (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            console.log('Entries for User ID:', uid, data);
+                            alert(JSON.stringify(data, null, 2));
+                        } else {
+                            alert('No entries found for this User ID.');
+                        }
+                    },
+                    (error) => {
+                        console.error("Error fetching data:", error);
+                        alert("Error fetching data: " + error.message);
+                    }
+                );
+            }
+        }
+
+
+
+
+
+        // Delete entries
+        function deleteEntry() {
+            const uid = prompt("Enter User ID to delete entries:");
+            if (uid) {
+                const entriesRef = ref(database, 'users/' + uid);
+                remove(entriesRef)
+                    .then(() => {
+                        alert('Entries deleted successfully!');
+                    })
+                    .catch((error) => {
+                        alert('Error: ' + error.message);
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+
+
+<!-- // function viewEntries() {
+    //    const uid = prompt("Enter User ID to view entries:");
+    //     if (uid) {
+    //         const entriesRef = ref(database, 'users/' + uid);
+    //         onValue(entriesRef, (snapshot) => {
+    //             const data = snapshot.val();
+    //             if (data) {
+    //                 console.log('Entries for User ID:', uid, data);
+    //                 alert(JSON.stringify(data, null, 2));
+    //             } else {
+    //                 alert('No entries found for this User ID.');
+    //             }
+    //         });
+    //     }
+    // }  -->
+
+
+    <!-- //  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"; -->

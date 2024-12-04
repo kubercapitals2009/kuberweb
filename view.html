@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View User Data - Kuber Capitals</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            background-color: #1e293b;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #b0bec5;
+        }
+
+        .content {
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .content h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .content label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        .entries-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #e3f2fd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .entry .amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e88e5;
+            flex: 1;
+            text-align: left;
+        }
+
+        .entry .details {
+            flex: 4;
+            text-align: left;
+            color: #555;
+        }
+
+        .entry .status {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status.Delevered {
+            background-color: #18742d;
+            color: #ffffff;
+        }
+
+        .status.Hold{
+            background-color: #bc9f40;
+            color: #ffffff;
+        }
+
+        .status.Sell {
+            background-color: #ea0619;
+            color: #fdfdfd;
+        }
+
+        .fund {
+            text-align: center;
+            margin-bottom: 30px;
+            color: rgb(255, 0, 43);
+            font-size: x-large;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Kuber Capitals</h1>
+        <p>View User Data</p>
+    </div>
+    <div class="content">
+        <h3>Search User</h3>
+        <label for="userEmail">Enter Your User Id:</label>
+        <input type="email" id="userEmail" placeholder="Enter User Id">
+        <button onclick="fetchUserData()">View Data</button>
+
+        <div id="entriesContainer" class="entries-container" style="display: none;">
+            <h4>User Data:</h4>
+            <div id="fundDisplay" class="fund"></div>
+            <div id="entriesList"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYq7emwuBE5umqLsPOVuSAuFVof8AKtsY",
+            authDomain: "kuber-capitals-670d4.firebaseapp.com",
+            databaseURL: "https://kuber-capitals-670d4-default-rtdb.firebaseio.com",
+            projectId: "kuber-capitals-670d4",
+            storageBucket: "kuber-capitals-670d4.appspot.com",
+            messagingSenderId: "1047880352488",
+            appId: "1:1047880352488:web:4b8ab2ed1ed5cac6a2bf5d",
+            measurementId: "G-H6N1MTGHHP"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Fetch user data by email
+        function fetchUserData() {
+            const email = document.getElementById('userEmail').value;
+            if (!email) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            const sanitizedEmail = email.replace(/[@.]/g, '_'); // Sanitize email for Firebase key
+            const userRef = ref(db, `users/${sanitizedEmail}`);
+
+            onValue(
+                userRef,
+                (snapshot) => {
+                    const data = snapshot.val();
+                    const fundDisplay = document.getElementById('fundDisplay');
+                    const entriesList = document.getElementById('entriesList');
+                    const container = document.getElementById('entriesContainer');
+
+                    entriesList.innerHTML = ''; // Clear previous data
+                    fundDisplay.innerHTML = ''; // Clear previous fund display
+
+                    if (data) {
+                        let isFundDisplayed = false;
+
+                        Object.entries(data).forEach(([key, value]) => {
+                            if (value.amount && value.date && value.status) {
+                                const statusClass = value.status === 'Delevered'
+                                    ? 'Delevered'
+                                    : value.status === 'Hold'
+                                    ? 'Hold'
+                                    : 'Sell';
+
+                                if (!isFundDisplayed && value.fund) {
+                                    fundDisplay.innerHTML = `Available Fund: ₹${value.fund}`;
+                                    isFundDisplayed = true;
+                                }
+
+                                const entry = `
+                                    <div class="entry">
+                                        <div class="amount">${value.amount}</div>
+                                        <div class="details">
+                                            Date: ${value.date}<br>
+                                            User Id: ${email}
+                                        </div>
+                                        <div class="status ${statusClass}">${value.status}</div>
+                                    </div>
+                                `;
+                                entriesList.innerHTML += entry;
+                            }
+                        });
+
+                        container.style.display = 'block';
+                    } else {
+                        alert('No data found for this user.');
+                        container.style.display = 'none';
+                    }
+                },
+                (error) => {
+                    alert('Error fetching data: ' + error.message);
+                }
+            );
+        }
+
+        window.fetchUserData = fetchUserData;
+    </script>
+</body>
+
+</html>

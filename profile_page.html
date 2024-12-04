@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish User Profile</title>
+
+    <!-- External FontAwesome and Boxicons -->
+    <script src="https://kit.fontawesome.com/9edd1ad735.js" crossorigin="anonymous"></script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #1d2671, #c33764);
+            color: #333;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Wrapper for Center Alignment */
+        .wrapper {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* Card Design */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        /* Header Icon Bar */
+        .header-icons {
+            display: flex;
+            padding: 10px;
+        }
+
+        .header-icons i {
+            font-size: 24px;
+            justify-content: end;
+            color: #1d2671;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* Profile Header Section */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .profile-header i {
+            font-size: 60px;
+            color: #1d2671;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .profile-header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #c33764;
+            margin-bottom: 10px;
+        }
+
+        .profile-header h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1d2671;
+            margin: 5px 0;
+        }
+
+        .profile-header p {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+
+        /* Profile Details Section */
+        .profile-details {
+            margin-top: 20px;
+        }
+
+        .profile-details h4 {
+            font-size: 18px;
+            color: #1d2671;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #c33764;
+            display: inline-block;
+        }
+
+        .profile-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-details li {
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .profile-details li strong {
+            color: #1d2671;
+        }
+
+        .profile-details li span {
+            color: #555;
+        }
+
+        /* Action Button */
+        .profile-actions {
+            margin-top: 30px;
+        }
+
+        .btn {
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 14px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c33764, #1d2671);
+            color: #fff;
+            border: none;
+            font-weight: bold;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            transform: translateY(-2px);
+        }
+
+
+
+        /* order button */
+
+        .header-icons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f9fa; /* Light background for header */
+            border-bottom: 1px solid #ddd; /* Optional: Separator line */
+        }
+
+        .header-icons button {
+            background: linear-gradient(135deg, #c33764, #1d2671); /* Light blue */
+            color: #f9f9f9; /* Black text */
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .header-icons button:hover {
+            background-color: #081a47; /* Darker blue */
+            transform: scale(1.05);
+        }
+
+        .header-icons .email_icon,
+        .header-icons a {
+            margin-left: 15px;
+            color: #333;
+            font-size: 20px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .header-icons .email_icon:hover,
+        .header-icons a:hover {
+            background: linear-gradient(to right, #1d2671, #c33764);
+        }
+
+        /* Ensure icons align properly */
+        .header-icons i {
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Profile Card -->
+        <section class="profile-content">
+            <div class="card">
+                <!-- Header Icons -->
+                <div class="header-icons hello">
+
+                    <button onclick="window.location.href='view.html'">
+                        VIEW ORDERS
+                    </button>
+
+                    <div class="icons">
+                        <div class="email_icon">
+                            <i class='bx bx-envelope'></i>
+                        </div>
+                        <a href="User_details.html">
+                            <i class="bx bxs-user"></i>
+                        </a>
+                    </div> 
+
+                </div>
+
+                <div class="card-body">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <img src="assets\images\user_logo.png" alt="Profile Picture">
+                        <h2>Welcome, <span id="user-name"></span></h2>
+                        <p id="user-email"></p>
+                    </div>
+
+                    <!-- Profile Details Section -->
+                    <div class="profile-details">
+                        <h4>Account Details</h4>
+                        <ul>
+                            <li><strong>Name:</strong> <span id="profile-name"></span></li>
+                            <li><strong>Email:</strong> <span id="profile-email"></span></li>
+                            <li><strong>Gender:</strong> <span id="profile-gender"></span></li>
+                            <li><strong>Number:</strong> <span id="profile-number"></span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="profile-actions text-center mt-4">
+                        <a href="login_page.html" class="btn btn-danger">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript for Dynamic Data -->
+    <script>
+        // Fetch user info from session storage
+        let UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+        let userName = document.getElementById('user-name');
+        let userEmail = document.getElementById('user-email');
+        let profileName = document.getElementById('profile-name');
+        let profileEmail = document.getElementById('profile-email');
+        let profileGender = document.getElementById('profile-gender');
+        let profileNumber = document.getElementById('profile-number');
+
+        if (UserInfo) {
+            // Populate profile details
+            userName.innerText = UserInfo.first_name || "User";
+            userEmail.innerText = UserInfo.email || "example@mail.com";
+            profileName.innerText = UserInfo.first_name || "User";
+            profileEmail.innerText = UserInfo.email || "example@mail.com";
+            profileGender.innerText = UserInfo.Gender || "Not specified";
+            profileNumber.innerText = UserInfo.PhoneNumber || "N/A";
+        } else {
+            // Redirect to login if no user info found
+            window.location.href = 'login_page.html';
+        }
+    </script>
+</body>
+
+</html>

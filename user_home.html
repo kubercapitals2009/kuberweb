@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://growinvestments.in/assets/user/css/style.css">
+    <link rel="stylesheet"
+        href="https://growinvestments.in/assets/user/vendor/%40fortawesome/fontawesome-free/css/all.min.css">
+    <script src="https://kit.fontawesome.com/9edd1ad735.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    // Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyCYq7emwuBE5umqLsPOVuSAuFVof8AKtsY",
+        authDomain: "kuber-capitals-670d4.firebaseapp.com",
+        databaseURL: "https://kuber-capitals-670d4-default-rtdb.firebaseio.com",
+        projectId: "kuber-capitals-670d4",
+        storageBucket: "kuber-capitals-670d4.firebasestorage.app",
+        messagingSenderId: "1047880352488",
+        appId: "1:1047880352488:web:4b8ab2ed1ed5cac6a2bf5d",
+        measurementId: "G-H6N1MTGHHP"
+    };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const dbref = ref(db);
+    // Form inputs
+    let name = getElementVal("first_name");
+    let email = document.getElementById("email");
+    let MainForm = document.getElementById("MainForm");
+    const sanitizedEmail = email.value.replace(/[.@#$\[\]]/g, "_");
+    // Sign In User
+    const SignInUser = async (evt) => {
+        evt.preventDefault();
+
+        signInWithEmailAndPassword(auth, email.value, password.value)
+            .then((credentials) => {
+                // Query the database using the email as the key
+                get(child(dbref, 'users/' + sanitizedEmail)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        sessionStorage.setItem("user-info", JSON.stringify({
+                            first_name: snapshot.val().first_name,
+                            gender: snapshot.val().gender
+                        }));
+                        sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                        window.location.href = 'profile.html';
+                    } else {
+                        alert("User data not found.");
+                    }
+                });
+            })
+            .catch((error) => {
+                alert("Login failed: " + error.message);
+                console.log("Error code:", error.code);
+                console.log("Error message:", error.message);
+            });
+    };
+    // Add event listener to the form
+    MainForm.addEventListener('submit', SignInUser);
+</script>
+    <h2 id="msg"></h2>
+    <h2 id="greet"></h2>
+    <script>
+        let UserCreds = JSON.parse(sessionStorage.getItem("user-cred"));
+        let UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+        let MsHead = document.getElementById('msg');
+        let GreetHead = document.getElementById('greet');
+        let SignoutBtn = document.getElementById('signoutbutton');
+        let SignOut = () => {
+            sessionStorage.removeItem("user-creds");
+            sessionStorage.removeItem("user-info");
+            window.location.href = 'login_page.html'
+        }
+        let CheckCred = () => {
+            if (!sessionStorage.getItem("user-creds"))
+                window.location.href = 'login_page.html'
+            else {
+                MsHead.innerText = `user with email "${UserCreds.email}" logged in `;
+                GreetHead.innerText = `welcome ${UserInfo.first_name + " " + UserInfo.gender}!`;
+            }
+        }
+        window.addEventListener('load', CheckCred);
+        SignOutBtn.addEventListener('click', SignOut);
+    </script>
+
+</body>
+
+</html>
